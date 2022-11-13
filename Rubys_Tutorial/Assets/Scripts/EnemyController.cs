@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class EnemyController : MonoBehaviour
 {
    public float speed;
@@ -16,12 +16,15 @@ public class EnemyController : MonoBehaviour
     
     // Start is called before the first frame update
     Animator animator;
+    private RubyController rubyController;
 
     void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
         timer = changeTime;
         animator = GetComponent<Animator>();
+        GameObject rubyControllerObject = GameObject.FindWithTag("RubyController");
+        rubyController = rubyControllerObject.GetComponent<RubyController>();
     }
 
     void Update()
@@ -80,9 +83,13 @@ public class EnemyController : MonoBehaviour
     //Public because we want to call it from elsewhere like the projectile script
     public void Fix()
     {
+        if (rubyController != null) 
+        {
+            rubyController.ChangeScore(1);
+        }
         broken = false;
         rigidbody2D.simulated = false;
-
+        animator.SetTrigger("Fixed");
         smokeEffect.Stop();
     }
 }
