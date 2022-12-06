@@ -16,6 +16,9 @@ public class RubyController : MonoBehaviour
     public float timeInvincible = 2.0f;
     bool isInvincible;
     float invincibleTimer;
+    public float timeBoosting = 4.0f;
+    float speedBoostTimer;
+    bool isBoosting;
 
     Rigidbody2D rigidbody2d;
     float horizontal;
@@ -27,6 +30,7 @@ public class RubyController : MonoBehaviour
     public AudioClip hitSound;
     public AudioClip WinSound;
     public AudioClip LoseSound;
+    public AudioClip cogpickupSound;
     public AudioClip backgroundSound;
     public ParticleSystem gainHealth;
     public ParticleSystem loseHealth;
@@ -130,9 +134,19 @@ public class RubyController : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // this loads the currently active scene
             }
         }
-        
-    }
 
+    if (isBoosting == true)
+        {
+            speedBoostTimer -= Time.deltaTime;
+            speed = 5;
+        
+            if (speedBoostTimer < 0)
+            {
+                isBoosting = false;
+                speed = 3; 
+            }
+        }
+    }
     void FixedUpdate()
     {
         Vector2 position = rigidbody2d.position;
@@ -216,9 +230,20 @@ public class RubyController : MonoBehaviour
     {
         if (other.tag == "Ammo")
         {
-            cogCount += 1;
+            cogCount += 4;
             SetCogText();
             Destroy(other.gameObject);
+
+            PlaySound(cogpickupSound);
+        }
+    }
+
+    public void SpeedBoost(int amount)
+    {
+        if (amount > 0)
+        {
+            speedBoostTimer = timeBoosting;
+            isBoosting = true;
         }
     }
 
